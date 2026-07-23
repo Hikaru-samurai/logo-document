@@ -1,85 +1,90 @@
 <!DOCTYPE html>
 <!--
 ═══════════════════════════════════════════════════════════════════
-  ブランドガイドライン テンプレート（単一HTMLファイル / CSS・JS内包）
+  ブランドガイドライン ポータル（TOPページ / 単一HTMLファイル）
 ═══════════════════════════════════════════════════════════════════
 
-■ 差し替え手順
+■ このページの役割
+  社内の複数ブランドのガイドラインへの入口となる一覧ページです。
+  各ブランドのガイドライン本体は brands/<ブランドID>/index.html に
+  配置されています。
 
-1. BRAND_CONFIG を編集する
-   このコメント直後の <script> 内にある BRAND_CONFIG オブジェクトが
-   唯一の設定箇所です。ここを書き換えるだけで、ブランド名・ロゴ・
-   カラー・フォント・バージョン表記などページ全体に反映されます。
+■ ブランドを追加する手順
 
-   - brandName / brandNameEn / tagline : ブランド名とタグライン
-   - logo.primary / white / symbol     : ロゴ画像のパス（SVG/PNG）
-   - logo.minWidthPx                   : 最小使用サイズ（px）
-   - logo.clearSpaceRatio              : クリアスペース係数（ロゴ高さ×係数）
-   - colors                            : HEXを書き換えるとページ配色も連動
-   - typography                        : Google Fonts のフォント名とウェイト
-   - lastUpdated / version             : 表紙とフッターに表示
+1. template/guideline-template.html を
+   brands/<新ブランドID>/index.html としてコピーする
+   （フォルダ名は半角英数字とハイフン推奨。例: brands/brand-c/）
 
-2. ロゴ画像を配置する
-   この index.html と同じ階層に assets/ フォルダを作成し、
-   logo-primary.svg / logo-white.svg / logo-symbol.svg を置きます。
-   （ファイル名を変える場合は BRAND_CONFIG.logo のパスも変更）
+2. コピーしたファイル冒頭の BRAND_CONFIG を新ブランドの内容に
+   書き換える（portalUrl は "../../index.html" のままでOK）
 
-   ロゴ画像が未配置・読み込み失敗の場合は、ブランド名テキストの
-   プレースホルダーが自動表示されるため、画像なしでも動作します。
+3. ロゴ画像を brands/<新ブランドID>/assets/ に配置する
+   （未配置でもテキストプレースホルダーで動作します）
 
-3. フォントを変更する場合
-   typography.jp / en の family に Google Fonts のフォント名を
-   そのまま記入してください（例: "Zen Kaku Gothic New"）。
-   読み込みURLは自動で組み立てられます。
+4. この index.html の SITE_CONFIG.brands 配列に1件追加する
+   （下の <script> 内。id / name / tagline / path / colors 等）
 
-4. 印刷 / PDF化
-   ブラウザの印刷機能でセクションごとに改ページされたPDFを
-   出力できます（ナビゲーションは自動非表示）。
+■ ブランドを削除する場合
+  SITE_CONFIG.brands から該当エントリを削除し、
+  brands/ 配下のフォルダを削除してください。
 ═══════════════════════════════════════════════════════════════════
 -->
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Brand Guidelines</title>
+<title>Brand Guidelines Portal</title>
 
 <script>
 /* ================================================================
    ★ 設定はここだけ編集すればOK ★
    ================================================================ */
-const BRAND_CONFIG = {
-  brandName: "Sample Brand",
-  brandNameEn: "Sample Brand Inc.",
-  tagline: "ブランドのタグラインをここに",
-  logo: {
-    primary: "assets/logo-primary.svg",   // 通常ロゴ
-    white: "assets/logo-white.svg",       // 白抜きロゴ(暗背景用)
-    symbol: "assets/logo-symbol.svg",     // シンボルマーク単体
-    minWidthPx: 120,                      // 最小使用サイズ
-    clearSpaceRatio: 0.5                  // 余白 = ロゴ高さ × この係数
-  },
-  colors: {
-    primary:   { name: "Primary",   hex: "#1A73E8" },
-    secondary: { name: "Secondary", hex: "#0F2B46" },
-    accent:    { name: "Accent",    hex: "#FF6B35" },
-    neutral:   [ { name: "Gray 900", hex: "#1F1F1F" },
-                 { name: "Gray 500", hex: "#767676" },
-                 { name: "Gray 100", hex: "#F2F2F2" } ]
-  },
+const SITE_CONFIG = {
+  siteTitle: "ブランドガイドライン ポータル",
+  siteTitleEn: "Brand Guidelines Portal",
+  companyName: "〇〇株式会社",          // 運営会社名（プレースホルダー）
+  description: "社内で運用しているブランドの各種ガイドラインをまとめたポータルです。制作物にブランド要素を使用する際は、必ず該当ブランドの最新ガイドラインを参照してください。",
+  contact: "ブランドマネジメント室 brand@example.com（プレースホルダー）",
+  lastUpdated: "2026-07-23",
+
+  /* ブランド一覧: 1件追加するとカードが1枚増えます */
+  brands: [
+    {
+      id: "brand-a",
+      name: "Brand A",
+      nameEn: "Brand A Co., Ltd.",
+      tagline: "ブランドAのタグラインをここに",
+      path: "brands/brand-a/index.html",
+      logo: "brands/brand-a/assets/logo-symbol.svg", // 任意（無ければ頭文字表示）
+      colors: { primary: "#1A73E8", secondary: "#0F2B46" },
+      version: "1.0",
+      updated: "2026-07-23"
+    },
+    {
+      id: "brand-b",
+      name: "Brand B",
+      nameEn: "Brand B Inc.",
+      tagline: "ブランドBのタグラインをここに",
+      path: "brands/brand-b/index.html",
+      logo: "brands/brand-b/assets/logo-symbol.svg",
+      colors: { primary: "#00875A", secondary: "#1B3A2D" },
+      version: "1.0",
+      updated: "2026-07-23"
+    }
+  ],
+
   typography: {
     jp: { family: "Noto Sans JP", weights: [400, 700] },
     en: { family: "Inter", weights: [400, 600] }
-  },
-  lastUpdated: "2026-07-22",
-  version: "1.0"
+  }
 };
 /* ================================================================ */
 </script>
 
 <script>
-/* Google Fonts のURLを BRAND_CONFIG から組み立てて読み込む */
+/* Google Fonts のURLを SITE_CONFIG から組み立てて読み込む */
 (function loadFonts() {
-  const t = BRAND_CONFIG.typography;
+  const t = SITE_CONFIG.typography;
   const families = [t.jp, t.en].map(f =>
     "family=" + f.family.replace(/ /g, "+") + ":wght@" + f.weights.join(";")
   ).join("&");
@@ -91,1000 +96,333 @@ const BRAND_CONFIG = {
 </script>
 
 <style>
-/* ========== リセット・基本 ========== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  /* JSで BRAND_CONFIG から上書きされるフォールバック値 */
-  --color-primary: #1A73E8;
-  --color-secondary: #0F2B46;
-  --color-accent: #FF6B35;
-  --color-gray-dark: #1F1F1F;
-  --color-gray-mid: #767676;
-  --color-gray-light: #F2F2F2;
+  --ink: #1F1F1F;
+  --ink-sub: #767676;
+  --line: #E8E8E8;
+  --bg-soft: #F7F8FA;
+  --header-bg: #0F1B2A;
   --font-jp: "Noto Sans JP", sans-serif;
   --font-en: "Inter", sans-serif;
-  --nav-width: 240px;
-  --content-max: 860px;
+  --content-max: 1040px;
 }
-
-html { scroll-behavior: smooth; scroll-padding-top: 24px; }
 
 body {
   font-family: var(--font-en), var(--font-jp), sans-serif;
-  color: var(--color-gray-dark);
-  background: #FFFFFF;
+  color: var(--ink);
+  background: var(--bg-soft);
   line-height: 1.8;
   font-size: 16px;
 }
 
-img { max-width: 100%; height: auto; }
-
-/* ========== サイドナビゲーション ========== */
-.side-nav {
-  position: fixed;
-  top: 0; left: 0;
-  width: var(--nav-width);
-  height: 100vh;
-  background: var(--color-secondary);
+/* ========== ヘッダー ========== */
+.portal-header {
+  background: var(--header-bg);
   color: #FFFFFF;
-  padding: 32px 0;
-  overflow-y: auto;
-  z-index: 100;
-  display: flex;
-  flex-direction: column;
+  padding: 72px 24px 64px;
 }
-.side-nav .nav-brand {
-  padding: 0 24px 24px;
-  border-bottom: 1px solid rgba(255,255,255,0.15);
-  margin-bottom: 16px;
-}
-.side-nav .nav-brand .nav-brand-name {
-  font-weight: 700;
-  font-size: 1.05rem;
-  line-height: 1.4;
-  word-break: break-word;
-}
-.side-nav .nav-brand .nav-brand-sub {
-  font-size: 0.72rem;
-  opacity: 0.7;
-  margin-top: 4px;
-  letter-spacing: 0.05em;
-}
-.side-nav ul { list-style: none; flex: 1; }
-.side-nav a {
-  display: block;
-  padding: 10px 24px;
-  color: rgba(255,255,255,0.82);
-  text-decoration: none;
-  font-size: 0.88rem;
-  border-left: 3px solid transparent;
-  transition: background 0.2s, border-color 0.2s, color 0.2s;
-}
-.side-nav a:hover { background: rgba(255,255,255,0.08); color: #FFF; }
-.side-nav a.active {
-  background: rgba(255,255,255,0.12);
-  border-left-color: var(--color-accent);
-  color: #FFFFFF;
-  font-weight: 700;
-}
-.side-nav .nav-meta {
-  padding: 16px 24px 0;
-  font-size: 0.72rem;
-  opacity: 0.6;
-  border-top: 1px solid rgba(255,255,255,0.15);
-}
-
-/* ハンバーガーボタン（モバイルのみ表示） */
-.nav-toggle {
-  display: none;
-  position: fixed;
-  top: 14px; right: 14px;
-  z-index: 200;
-  width: 48px; height: 48px;
-  border: none;
-  border-radius: 8px;
-  background: var(--color-secondary);
-  cursor: pointer;
-}
-.nav-toggle span {
-  display: block;
-  width: 22px; height: 2px;
-  background: #FFF;
-  margin: 5px auto;
-  transition: transform 0.25s, opacity 0.25s;
-}
-.nav-toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-.nav-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
-.nav-toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
-
-/* ========== メインコンテンツ ========== */
-.main-content {
-  margin-left: var(--nav-width);
-  padding: 0 40px;
-}
-.guideline-section {
-  max-width: var(--content-max);
-  margin: 0 auto;
-  padding: 72px 0;
-  border-bottom: 1px solid var(--color-gray-light);
-}
-.guideline-section:last-of-type { border-bottom: none; }
-
-.section-label {
+.portal-header .inner { max-width: var(--content-max); margin: 0 auto; }
+.portal-header .header-label {
   font-family: var(--font-en);
   font-size: 0.78rem;
   font-weight: 600;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--color-primary);
-  margin-bottom: 8px;
+  opacity: 0.65;
+  margin-bottom: 12px;
 }
-.guideline-section h2 {
-  font-size: 1.9rem;
+.portal-header h1 {
+  font-size: 2.2rem;
   font-weight: 700;
-  margin-bottom: 24px;
-  line-height: 1.4;
+  line-height: 1.35;
+  margin-bottom: 6px;
 }
-.guideline-section h3 {
+.portal-header .header-en {
+  font-family: var(--font-en);
+  font-size: 0.95rem;
+  opacity: 0.7;
+  margin-bottom: 24px;
+}
+.portal-header .header-desc {
+  max-width: 640px;
+  font-size: 0.95rem;
+  opacity: 0.85;
+}
+.portal-header .header-meta {
+  margin-top: 24px;
+  font-size: 0.78rem;
+  opacity: 0.6;
+}
+
+/* ========== ブランド一覧 ========== */
+.portal-main {
+  max-width: var(--content-max);
+  margin: -32px auto 0;
+  padding: 0 24px 64px;
+}
+.brand-count {
+  font-size: 0.85rem;
+  color: #FFFFFF;
+  opacity: 0;              /* ヘッダー重なり回避用スペーサ */
+  height: 0;
+}
+.brand-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
+}
+.brand-card {
+  display: flex;
+  flex-direction: column;
+  background: #FFFFFF;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.brand-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 28px rgba(15, 27, 42, 0.14);
+}
+.brand-card:focus-visible {
+  outline: 3px solid #1A73E8;
+  outline-offset: 2px;
+}
+.brand-card .card-visual {
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.brand-card .card-visual img { max-height: 52px; max-width: 60%; width: auto; }
+.brand-card .brand-initial {
+  width: 56px; height: 56px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-en);
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+.brand-card .card-body { padding: 20px 22px 18px; flex: 1; }
+.brand-card h2 { font-size: 1.15rem; font-weight: 700; line-height: 1.4; }
+.brand-card .card-en {
+  font-family: var(--font-en);
+  font-size: 0.78rem;
+  color: var(--ink-sub);
+  margin-bottom: 10px;
+}
+.brand-card .card-tagline { font-size: 0.88rem; color: var(--ink-sub); }
+.brand-card .card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 22px;
+  border-top: 1px solid var(--line);
+  font-size: 0.76rem;
+  color: var(--ink-sub);
+  font-family: var(--font-en);
+}
+.brand-card .card-cta {
+  font-weight: 600;
+  color: var(--ink);
+}
+.brand-card:hover .card-cta { text-decoration: underline; }
+
+/* 空状態 */
+.empty-note {
+  background: #FFFFFF;
+  border: 1px dashed var(--line);
+  border-radius: 14px;
+  padding: 40px;
+  text-align: center;
+  color: var(--ink-sub);
+}
+
+/* ========== 運用ガイド ========== */
+.portal-guide {
+  max-width: var(--content-max);
+  margin: 0 auto;
+  padding: 0 24px 64px;
+}
+.portal-guide h2 {
   font-size: 1.2rem;
   font-weight: 700;
-  margin: 40px 0 16px;
+  margin-bottom: 16px;
   padding-left: 12px;
-  border-left: 4px solid var(--color-primary);
+  border-left: 4px solid var(--header-bg);
 }
-.guideline-section p { margin-bottom: 16px; }
-.lead { font-size: 1.05rem; color: var(--color-gray-mid); }
-
-/* ========== 表紙 ========== */
-.cover {
-  min-height: 90vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-.cover .cover-logo { margin-bottom: 40px; }
-.cover .cover-logo img { max-height: 90px; width: auto; }
-.cover h1 {
-  font-size: 2.8rem;
-  font-weight: 700;
-  line-height: 1.3;
-  margin-bottom: 8px;
-}
-.cover .cover-en {
-  font-family: var(--font-en);
-  font-size: 1.05rem;
-  color: var(--color-gray-mid);
-  margin-bottom: 20px;
-}
-.cover .cover-tagline {
-  font-size: 1.15rem;
-  color: var(--color-primary);
-  font-weight: 700;
-  margin-bottom: 40px;
-}
-.cover .cover-meta {
-  display: flex;
-  gap: 32px;
-  font-size: 0.85rem;
-  color: var(--color-gray-mid);
-  border-top: 1px solid var(--color-gray-light);
-  padding-top: 20px;
-}
-.cover .cover-meta strong { display: block; color: var(--color-gray-dark); font-size: 1rem; }
-
-/* ========== ロゴ ========== */
-.logo-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-}
-.logo-card {
-  border: 1px solid var(--color-gray-light);
-  border-radius: 10px;
-  overflow: hidden;
-}
-.logo-card .logo-stage {
-  height: 150px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
+.guide-card {
   background: #FFFFFF;
-}
-.logo-card .logo-stage.dark { background: var(--color-secondary); }
-.logo-card .logo-stage img { max-height: 60px; max-width: 100%; width: auto; }
-.logo-card figcaption {
-  padding: 12px 16px;
-  font-size: 0.82rem;
-  color: var(--color-gray-mid);
-  border-top: 1px solid var(--color-gray-light);
-  background: #FAFAFA;
-}
-
-/* ロゴ読み込み失敗時のテキストフォールバック */
-.logo-fallback {
-  font-weight: 700;
-  font-size: 1.3rem;
-  letter-spacing: 0.02em;
-  color: var(--color-primary);
-  white-space: nowrap;
-}
-.logo-stage.dark .logo-fallback, .dont-stage .logo-fallback.on-dark { color: #FFFFFF; }
-.logo-fallback.symbol-fallback {
-  width: 56px; height: 56px;
-  border-radius: 12px;
-  background: var(--color-primary);
-  color: #FFF;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-}
-
-/* クリアスペース可視化 */
-.clearspace-demo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 48px 24px;
-  background: #FAFAFA;
-  border: 1px solid var(--color-gray-light);
-  border-radius: 10px;
-}
-.clearspace-box {
-  position: relative;
-  border: 2px dashed var(--color-accent);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  /* padding はJSで clearSpaceRatio から設定 */
-}
-.clearspace-box .cs-logo { height: 60px; width: auto; display: block; }
-.clearspace-box .cs-note {
-  position: absolute;
-  top: -28px; left: 50%;
-  transform: translateX(-50%);
-  font-size: 0.75rem;
-  color: var(--color-accent);
-  white-space: nowrap;
-  font-weight: 600;
-}
-
-/* 最小サイズ */
-.minsize-demo {
-  display: flex;
-  align-items: flex-end;
-  gap: 40px;
-  padding: 32px;
-  background: #FAFAFA;
-  border: 1px solid var(--color-gray-light);
-  border-radius: 10px;
-  flex-wrap: wrap;
-}
-.minsize-item { text-align: center; }
-.minsize-item img { display: block; margin: 0 auto 8px; }
-.minsize-item .size-caption { font-size: 0.78rem; color: var(--color-gray-mid); }
-.minsize-item .size-value { font-weight: 700; color: var(--color-gray-dark); }
-
-/* 背景使用可否 */
-.bg-usage-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-}
-.bg-usage-card { border-radius: 10px; overflow: hidden; border: 1px solid var(--color-gray-light); }
-.bg-usage-card .bg-stage {
-  height: 110px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
-}
-.bg-usage-card .bg-stage img { max-height: 40px; width: auto; max-width: 90%; }
-.bg-usage-card .bg-verdict {
-  text-align: center;
-  padding: 8px;
-  font-size: 0.82rem;
-  font-weight: 700;
-  background: #FAFAFA;
-  border-top: 1px solid var(--color-gray-light);
-}
-.bg-verdict.ok { color: #1B7F3B; }
-.bg-verdict.ng { color: #C62828; }
-
-/* ========== 禁止例 ========== */
-.dont-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-}
-.dont-card {
-  border: 1px solid var(--color-gray-light);
-  border-radius: 10px;
-  overflow: hidden;
-}
-.dont-stage {
-  position: relative;
-  height: 140px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #FFFFFF;
-  padding: 20px;
-  overflow: hidden;
-}
-.dont-stage img, .dont-stage .logo-fallback { max-height: 48px; width: auto; }
-/* 赤の斜線オーバーレイ */
-.dont-stage::before, .dont-stage::after {
-  content: "";
-  position: absolute;
-  top: 50%; left: 50%;
-  width: 130%;
-  height: 3px;
-  background: rgba(198, 40, 40, 0.85);
-  z-index: 2;
-  pointer-events: none;
-}
-.dont-stage::before { transform: translate(-50%, -50%) rotate(24deg); }
-.dont-stage::after  { transform: translate(-50%, -50%) rotate(-24deg); }
-.dont-card figcaption {
-  padding: 12px 16px;
-  font-size: 0.82rem;
-  background: #FAFAFA;
-  border-top: 1px solid var(--color-gray-light);
-}
-.dont-card figcaption .dont-no {
-  display: inline-block;
-  color: #C62828;
-  font-weight: 700;
-  margin-right: 6px;
-}
-
-/* 各禁止加工（ロゴ画像に実際に適用） */
-.dont-distort   { transform: scaleX(1.7); }
-.dont-rotate    { transform: rotate(-18deg); }
-.dont-recolor   { filter: hue-rotate(120deg) saturate(3); }
-.dont-shadow    { filter: drop-shadow(4px 6px 4px rgba(0,0,0,0.55)); }
-.dont-outline   { filter: drop-shadow(1px 0 0 #C62828) drop-shadow(-1px 0 0 #C62828) drop-shadow(0 1px 0 #C62828) drop-shadow(0 -1px 0 #C62828); }
-.dont-lowcontrast-stage { background: var(--color-primary); }
-.dont-lowcontrast { opacity: 0.5; }
-
-/* ========== カラーパレット ========== */
-.color-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  margin-bottom: 8px;
-}
-.color-card {
-  border-radius: 10px;
-  overflow: hidden;
-  border: 1px solid var(--color-gray-light);
-}
-.color-chip {
-  height: 110px;
-  display: flex;
-  align-items: flex-end;
-  padding: 12px 16px;
-  font-family: var(--font-en);
-  font-weight: 600;
-  font-size: 0.9rem;
-}
-.color-info {
-  padding: 12px 16px;
-  font-size: 0.82rem;
-  background: #FAFAFA;
-}
-.color-info .color-name { font-weight: 700; font-size: 0.95rem; margin-bottom: 4px; }
-.color-info .color-code { font-family: var(--font-en); color: var(--color-gray-mid); line-height: 1.6; }
-
-/* 使用比率バー */
-.ratio-bar {
-  display: flex;
-  height: 48px;
-  border-radius: 8px;
-  overflow: hidden;
-  margin: 16px 0 8px;
-}
-.ratio-bar .ratio-seg {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-en);
-  font-size: 0.8rem;
-  font-weight: 600;
-  min-width: 0;
-  white-space: nowrap;
-  overflow: hidden;
-}
-.ratio-legend { font-size: 0.82rem; color: var(--color-gray-mid); }
-
-/* ========== タイポグラフィ ========== */
-.type-specimen {
-  border: 1px solid var(--color-gray-light);
-  border-radius: 10px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
   padding: 28px;
-  margin-bottom: 20px;
 }
-.type-specimen .type-meta {
-  font-size: 0.8rem;
-  color: var(--color-gray-mid);
-  margin-bottom: 12px;
-  font-family: var(--font-en);
-}
-.type-specimen .type-sample-large { font-size: 2rem; line-height: 1.4; margin-bottom: 8px; }
-.type-specimen .type-sample-body { font-size: 1rem; color: var(--color-gray-dark); }
-.weight-row { display: flex; gap: 24px; flex-wrap: wrap; margin-top: 16px; }
-.weight-item {
-  font-size: 1.4rem;
-  line-height: 1.4;
-}
-.weight-item .weight-label {
-  display: block;
-  font-size: 0.72rem;
-  color: var(--color-gray-mid);
-  font-weight: 400;
-  font-family: var(--font-en);
+.guide-card ol { padding-left: 22px; font-size: 0.92rem; }
+.guide-card li { margin-bottom: 10px; }
+.guide-card code {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.85em;
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 1px 6px;
 }
 
-.scale-table { width: 100%; border-collapse: collapse; }
-.scale-table th, .scale-table td {
-  text-align: left;
-  padding: 14px 12px;
-  border-bottom: 1px solid var(--color-gray-light);
-  vertical-align: baseline;
-}
-.scale-table th {
-  font-size: 0.78rem;
-  color: var(--color-gray-mid);
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-.scale-table .scale-sample { line-height: 1.3; }
-
-/* ========== トーン&マナー ========== */
-.tone-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
-.tone-card {
-  border: 1px solid var(--color-gray-light);
-  border-radius: 10px;
-  padding: 24px;
-}
-.tone-card h4 {
-  font-size: 1rem;
-  margin-bottom: 12px;
-  color: var(--color-primary);
-}
-.tone-card ul { padding-left: 20px; font-size: 0.9rem; }
-.tone-card li { margin-bottom: 6px; }
-.tone-keywords { display: flex; gap: 10px; flex-wrap: wrap; margin: 16px 0; }
-.tone-keywords span {
-  padding: 6px 16px;
-  border-radius: 999px;
-  background: var(--color-gray-light);
-  font-size: 0.85rem;
-  font-weight: 700;
-}
-
-/* ========== お問い合わせ ========== */
-.contact-card {
-  background: var(--color-gray-light);
-  border-radius: 10px;
-  padding: 32px;
-}
-.contact-card dl { display: grid; grid-template-columns: 140px 1fr; row-gap: 12px; }
-.contact-card dt { font-weight: 700; font-size: 0.9rem; }
-.contact-card dd { font-size: 0.9rem; color: var(--color-gray-mid); }
-
-.page-footer {
-  max-width: var(--content-max);
-  margin: 0 auto;
-  padding: 32px 0 48px;
-  font-size: 0.78rem;
-  color: var(--color-gray-mid);
+/* ========== フッター ========== */
+.portal-footer {
+  border-top: 1px solid var(--line);
+  background: #FFFFFF;
+  padding: 28px 24px;
   text-align: center;
+  font-size: 0.78rem;
+  color: var(--ink-sub);
 }
 
-/* ========== レスポンシブ（768px） ========== */
+/* ========== レスポンシブ ========== */
 @media (max-width: 768px) {
-  .side-nav {
-    transform: translateX(-100%);
-    transition: transform 0.3s ease;
-    width: min(300px, 80vw);
-    box-shadow: 4px 0 24px rgba(0,0,0,0.25);
-  }
-  .side-nav.open { transform: translateX(0); }
-  .nav-toggle { display: block; }
-  .nav-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.4);
-    z-index: 90;
-  }
-  .nav-overlay.visible { display: block; }
-  .main-content { margin-left: 0; padding: 0 20px; }
-  .guideline-section { padding: 56px 0; }
-  .cover h1 { font-size: 2rem; }
-  .cover .cover-meta { flex-wrap: wrap; gap: 16px; }
-  .logo-grid, .dont-grid, .color-grid { grid-template-columns: 1fr 1fr; }
-  .bg-usage-grid { grid-template-columns: 1fr 1fr; }
-  .tone-grid { grid-template-columns: 1fr; }
-  .contact-card dl { grid-template-columns: 1fr; row-gap: 4px; }
-  .contact-card dd { margin-bottom: 12px; }
-}
-@media (max-width: 480px) {
-  .logo-grid, .dont-grid, .color-grid { grid-template-columns: 1fr; }
+  .portal-header { padding: 56px 20px 48px; }
+  .portal-header h1 { font-size: 1.7rem; }
+  .portal-main, .portal-guide { padding-left: 20px; padding-right: 20px; }
+  .brand-grid { grid-template-columns: 1fr; }
 }
 
 /* ========== 印刷用 ========== */
 @media print {
-  .side-nav, .nav-toggle, .nav-overlay { display: none !important; }
-  .main-content { margin-left: 0; padding: 0; }
-  .guideline-section {
-    page-break-before: always;
-    break-before: page;
-    padding: 24px 0;
-    border-bottom: none;
-    max-width: 100%;
-  }
-  .guideline-section:first-of-type, .cover { page-break-before: avoid; break-before: avoid; }
-  .cover { min-height: auto; padding-top: 64px; }
-  body { font-size: 12px; }
+  body { background: #FFFFFF; }
+  .portal-header { padding: 32px 0; color: #000; background: none; }
+  .portal-header .header-desc, .portal-header .header-label { opacity: 1; }
+  .brand-card { break-inside: avoid; box-shadow: none; }
+  .portal-guide { break-before: page; }
   a { color: inherit; text-decoration: none; }
-  .logo-card, .dont-card, .color-card, .type-specimen, .tone-card {
-    break-inside: avoid;
-  }
 }
 </style>
 </head>
 <body>
 
-<button class="nav-toggle" aria-label="メニューを開閉" aria-expanded="false" aria-controls="sideNav">
-  <span></span><span></span><span></span>
-</button>
-<div class="nav-overlay" id="navOverlay"></div>
-
-<nav class="side-nav" id="sideNav" aria-label="目次">
-  <div class="nav-brand">
-    <div class="nav-brand-name" data-bind="brandName">Brand</div>
-    <div class="nav-brand-sub">BRAND GUIDELINES</div>
+<header class="portal-header">
+  <div class="inner">
+    <p class="header-label">Brand Guidelines</p>
+    <h1 id="siteTitle">ブランドガイドライン ポータル</h1>
+    <p class="header-en" id="siteTitleEn">Brand Guidelines Portal</p>
+    <p class="header-desc" id="siteDesc"></p>
+    <p class="header-meta" id="headerMeta"></p>
   </div>
-  <ul>
-    <li><a href="#intro" class="nav-link">01 イントロダクション</a></li>
-    <li><a href="#logo" class="nav-link">02 ロゴ</a></li>
-    <li><a href="#logo-dont" class="nav-link">03 ロゴ使用禁止例</a></li>
-    <li><a href="#colors" class="nav-link">04 カラーパレット</a></li>
-    <li><a href="#typography" class="nav-link">05 タイポグラフィ</a></li>
-    <li><a href="#tone" class="nav-link">06 トーン&マナー</a></li>
-    <li><a href="#contact" class="nav-link">07 お問い合わせ</a></li>
-  </ul>
-  <div class="nav-meta">
-    <div>Version <span data-bind="version">-</span></div>
-    <div>Updated <span data-bind="lastUpdated">-</span></div>
-  </div>
-</nav>
+</header>
 
-<main class="main-content">
-
-  <!-- 01 表紙 / イントロダクション -->
-  <section class="guideline-section cover" id="intro" aria-labelledby="intro-title">
-    <div class="cover-logo" id="coverLogo"></div>
-    <p class="section-label">Brand Guidelines</p>
-    <h1 id="intro-title"><span data-bind="brandName">Brand</span><br>ブランドガイドライン</h1>
-    <p class="cover-en" data-bind="brandNameEn">Brand Inc.</p>
-    <p class="cover-tagline" data-bind="tagline">Tagline</p>
-    <p class="lead">
-      本ガイドラインは、<span data-bind="brandName">ブランド</span>のブランドアイデンティティを
-      一貫して正しく表現するためのルールをまとめたものです。ロゴ・カラー・タイポグラフィなどの
-      基本要素の使用方法を定義し、あらゆる接点で統一されたブランド体験を提供することを目的としています。
-      制作物への使用にあたっては、必ず本ガイドラインに従ってください。
-    </p>
-    <div class="cover-meta">
-      <div><strong data-bind="version">-</strong>Version</div>
-      <div><strong data-bind="lastUpdated">-</strong>最終更新日</div>
-      <div><strong data-bind="brandNameEn">-</strong>発行</div>
-    </div>
-  </section>
-
-  <!-- 02 ロゴ -->
-  <section class="guideline-section" id="logo" aria-labelledby="logo-title">
-    <p class="section-label">02 — Logo</p>
-    <h2 id="logo-title">ロゴ</h2>
-    <p>ロゴはブランドを象徴する最も重要な資産です。ここで定めた基本形・クリアスペース・最小サイズを必ず守って使用してください。</p>
-
-    <h3>基本形</h3>
-    <div class="logo-grid">
-      <figure class="logo-card">
-        <div class="logo-stage" data-logo-stage="primary"></div>
-        <figcaption>通常ロゴ — 明るい背景で使用する基本形です。</figcaption>
-      </figure>
-      <figure class="logo-card">
-        <div class="logo-stage dark" data-logo-stage="white"></div>
-        <figcaption>白抜きロゴ — 暗い背景・写真上で使用します。</figcaption>
-      </figure>
-      <figure class="logo-card">
-        <div class="logo-stage" data-logo-stage="symbol"></div>
-        <figcaption>シンボルマーク — アイコン等の限られたスペースで使用します。</figcaption>
-      </figure>
-    </div>
-
-    <h3>クリアスペース</h3>
-    <p>ロゴの周囲には、他の要素を配置しない余白（クリアスペース）を確保してください。余白量は<strong>ロゴの高さ × <span id="clearRatioText">0.5</span></strong> 以上とします。</p>
-    <figure class="clearspace-demo">
-      <div class="clearspace-box" id="clearspaceBox">
-        <span class="cs-note" id="clearspaceNote">クリアスペース = 高さ × 0.5</span>
-      </div>
-    </figure>
-
-    <h3>最小使用サイズ</h3>
-    <p>視認性を保つため、ロゴは横幅 <strong><span id="minSizeText">120</span>px（印刷時は相当サイズ）</strong>未満で使用しないでください。</p>
-    <figure class="minsize-demo" id="minsizeDemo"></figure>
-
-    <h3>背景色別の使用可否</h3>
-    <div class="bg-usage-grid" id="bgUsageGrid"></div>
-  </section>
-
-  <!-- 03 ロゴ使用禁止例 -->
-  <section class="guideline-section" id="logo-dont" aria-labelledby="dont-title">
-    <p class="section-label">03 — Logo Don'ts</p>
-    <h2 id="dont-title">ロゴ使用禁止例</h2>
-    <p>ロゴの改変はブランドイメージを損ないます。以下のような使用は一切禁止します。</p>
-    <div class="dont-grid" id="dontGrid"></div>
-  </section>
-
-  <!-- 04 カラーパレット -->
-  <section class="guideline-section" id="colors" aria-labelledby="colors-title">
-    <p class="section-label">04 — Color Palette</p>
-    <h2 id="colors-title">カラーパレット</h2>
-    <p>ブランドカラーは、あらゆるコミュニケーションにおける統一感の基盤です。指定のカラーコードを正確に使用してください。</p>
-
-    <h3>ブランドカラー</h3>
-    <div class="color-grid" id="brandColorGrid"></div>
-
-    <h3>ニュートラルカラー</h3>
-    <div class="color-grid" id="neutralColorGrid"></div>
-
-    <h3>使用比率の目安</h3>
-    <p>紙面・画面全体に対して、以下の比率を目安に配色してください。</p>
-    <div class="ratio-bar" id="ratioBar"></div>
-    <p class="ratio-legend">ベース（背景・余白）70% / メイン（Primary・Secondary）25% / アクセント 5%</p>
-  </section>
-
-  <!-- 05 タイポグラフィ -->
-  <section class="guideline-section" id="typography" aria-labelledby="type-title">
-    <p class="section-label">05 — Typography</p>
-    <h2 id="type-title">タイポグラフィ</h2>
-    <p>書体はブランドの声そのものです。指定フォントと定義済みのサイズスケールを使用してください。</p>
-
-    <h3>和文書体</h3>
-    <div class="type-specimen" id="jpSpecimen">
-      <p class="type-meta" id="jpFontMeta"></p>
-      <p class="type-sample-large jp-font">あらゆる体験に、一貫したブランドを。</p>
-      <p class="type-sample-body jp-font">永きに渡り愛されるブランドは、細部にまで一貫性が宿っています。私たちは、すべての接点で同じ声、同じ表情を届けます。</p>
-      <div class="weight-row" id="jpWeightRow"></div>
-    </div>
-
-    <h3>欧文書体</h3>
-    <div class="type-specimen" id="enSpecimen">
-      <p class="type-meta" id="enFontMeta"></p>
-      <p class="type-sample-large en-font">The quick brown fox jumps over the lazy dog.</p>
-      <p class="type-sample-body en-font">ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 0123456789</p>
-      <div class="weight-row" id="enWeightRow"></div>
-    </div>
-
-    <h3>サイズスケール例</h3>
-    <table class="scale-table">
-      <thead>
-        <tr><th>用途</th><th>サイズ / 行間</th><th>サンプル</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>見出し H1</td><td>32px / 1.4</td><td class="scale-sample" style="font-size:32px; font-weight:700;">ブランドの見出し</td></tr>
-        <tr><td>見出し H2</td><td>24px / 1.5</td><td class="scale-sample" style="font-size:24px; font-weight:700;">セクションの見出し</td></tr>
-        <tr><td>見出し H3</td><td>18px / 1.6</td><td class="scale-sample" style="font-size:18px; font-weight:700;">小見出しのテキスト</td></tr>
-        <tr><td>本文</td><td>16px / 1.8</td><td class="scale-sample" style="font-size:16px;">本文テキストのサンプルです。</td></tr>
-        <tr><td>注釈</td><td>13px / 1.6</td><td class="scale-sample" style="font-size:13px; color:var(--color-gray-mid);">注釈・キャプションのサンプルです。</td></tr>
-      </tbody>
-    </table>
-  </section>
-
-  <!-- 06 トーン&マナー -->
-  <section class="guideline-section" id="tone" aria-labelledby="tone-title">
-    <p class="section-label">06 — Tone &amp; Manner</p>
-    <h2 id="tone-title">トーン&マナー</h2>
-    <p>ビジュアルと言葉のトーンを揃えることで、ブランドの人格を一貫して伝えます。</p>
-
-    <div class="tone-keywords">
-      <span>誠実</span><span>先進的</span><span>あたたかい</span><span>シンプル</span>
-    </div>
-
-    <div class="tone-grid">
-      <div class="tone-card">
-        <h4>写真・イラストの方向性</h4>
-        <ul>
-          <li>自然光を活かした、明るくクリーンなトーンの写真を使用する</li>
-          <li>過度な加工・彩度の強調は避ける</li>
-          <li>人物は自然な表情・シーンを切り取る（作り込んだポーズは避ける）</li>
-          <li>イラストはフラットでシンプルなスタイルに統一する</li>
-        </ul>
-      </div>
-      <div class="tone-card">
-        <h4>文章トーン</h4>
-        <ul>
-          <li>簡潔で、専門用語に頼らないわかりやすい表現を使う</li>
-          <li>敬体（です・ます調）を基本とする</li>
-          <li>誇張表現・煽り表現は使用しない</li>
-          <li>読み手に寄り添う、前向きな言葉選びを心がける</li>
-        </ul>
-      </div>
-    </div>
-    <p style="margin-top:20px; font-size:0.85rem; color:var(--color-gray-mid);">※ 上記はプレースホルダーです。ブランドの実際の方針に合わせて書き換えてください。</p>
-  </section>
-
-  <!-- 07 お問い合わせ -->
-  <section class="guideline-section" id="contact" aria-labelledby="contact-title">
-    <p class="section-label">07 — Contact</p>
-    <h2 id="contact-title">お問い合わせ</h2>
-    <p>ロゴデータの提供依頼、本ガイドラインに関する質問・使用許諾については、下記までご連絡ください。</p>
-    <div class="contact-card">
-      <dl>
-        <dt>管理部署</dt><dd>〇〇株式会社 ブランドマネジメント室（プレースホルダー）</dd>
-        <dt>担当</dt><dd>山田 太郎（プレースホルダー）</dd>
-        <dt>メール</dt><dd>brand@example.com（プレースホルダー）</dd>
-        <dt>内線</dt><dd>000-0000（プレースホルダー）</dd>
-      </dl>
-    </div>
-  </section>
-
+<main class="portal-main">
+  <p class="brand-count" aria-hidden="true">.</p>
+  <nav aria-label="ブランド一覧">
+    <div class="brand-grid" id="brandGrid"></div>
+  </nav>
 </main>
 
-<footer class="page-footer">
-  © <span data-bind="brandNameEn">Brand Inc.</span> — Brand Guidelines v<span data-bind="version">1.0</span>（<span data-bind="lastUpdated">-</span> 更新）
-</footer>
+<section class="portal-guide" aria-labelledby="guide-title">
+  <h2 id="guide-title">ブランドを追加するには</h2>
+  <div class="guide-card">
+    <ol>
+      <li><code>template/guideline-template.html</code> を <code>brands/&lt;新ブランドID&gt;/index.html</code> としてコピーする</li>
+      <li>コピーしたファイル冒頭の <code>BRAND_CONFIG</code> を新ブランドの内容に書き換える</li>
+      <li>ロゴ画像を <code>brands/&lt;新ブランドID&gt;/assets/</code> に配置する（未配置でもテキスト表示で動作します）</li>
+      <li>この <code>index.html</code> の <code>SITE_CONFIG.brands</code> に1件追加する</li>
+    </ol>
+  </div>
+</section>
+
+<footer class="portal-footer" id="portalFooter"></footer>
 
 <script>
-/* ================================================================
-   描画処理（以下は編集不要）
-   ================================================================ */
 (function () {
   "use strict";
-  const C = BRAND_CONFIG;
+  const S = SITE_CONFIG;
 
-  /* ---------- ユーティリティ ---------- */
   function hexToRgb(hex) {
     let h = hex.replace("#", "");
     if (h.length === 3) h = h.split("").map(c => c + c).join("");
     const n = parseInt(h, 16);
     return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 };
   }
-  function rgbText(hex) {
-    const { r, g, b } = hexToRgb(hex);
-    return "R" + r + " G" + g + " B" + b;
-  }
-  /* 相対輝度から、チップ上の文字色（白/黒）を決める */
   function readableTextColor(hex) {
     const { r, g, b } = hexToRgb(hex);
-    const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-    return lum > 0.6 ? "#1F1F1F" : "#FFFFFF";
-  }
-  function el(tag, cls, html) {
-    const e = document.createElement(tag);
-    if (cls) e.className = cls;
-    if (html !== undefined) e.innerHTML = html;
-    return e;
+    return (0.299 * r + 0.587 * g + 0.114 * b) / 255 > 0.6 ? "#1F1F1F" : "#FFFFFF";
   }
 
-  /* ロゴ画像を生成。読み込み失敗時はテキストプレースホルダーに置換 */
-  function createLogo(src, opts) {
-    opts = opts || {};
+  document.title = S.siteTitle + " | " + S.companyName;
+  document.getElementById("siteTitle").textContent = S.siteTitle;
+  document.getElementById("siteTitleEn").textContent = S.siteTitleEn;
+  document.getElementById("siteDesc").textContent = S.description;
+  document.getElementById("headerMeta").textContent =
+    "運営: " + S.companyName + " ／ 掲載ブランド数: " + S.brands.length +
+    " ／ 最終更新: " + S.lastUpdated;
+  document.getElementById("portalFooter").textContent =
+    "© " + S.companyName + " — " + S.siteTitleEn +
+    "（お問い合わせ: " + S.contact + "）";
+
+  const grid = document.getElementById("brandGrid");
+
+  if (!S.brands.length) {
+    const empty = document.createElement("p");
+    empty.className = "empty-note";
+    empty.textContent = "掲載中のブランドはまだありません。SITE_CONFIG.brands に追加してください。";
+    grid.replaceWith(empty);
+    return;
+  }
+
+  S.brands.forEach(b => {
+    const card = document.createElement("a");
+    card.className = "brand-card";
+    card.href = b.path;
+
+    /* ビジュアル部: ロゴ画像 → 失敗時は頭文字チップ */
+    const visual = document.createElement("div");
+    visual.className = "card-visual";
+    visual.style.background =
+      "linear-gradient(135deg, " + b.colors.primary + ", " + b.colors.secondary + ")";
     const img = document.createElement("img");
-    img.alt = C.brandName + " ロゴ";
-    if (opts.className) img.className = opts.className;
-    if (opts.width) img.style.width = opts.width;
-    if (opts.height) img.style.height = opts.height;
+    img.alt = b.name + " ロゴ";
     img.onerror = function () {
-      const fb = el("span", "logo-fallback" +
-        (opts.symbol ? " symbol-fallback" : "") +
-        (opts.onDark ? " on-dark" : ""));
-      fb.textContent = opts.symbol ? C.brandName.charAt(0) : C.brandName;
-      if (opts.className) fb.classList.add.apply(fb.classList, opts.className.split(" "));
-      if (opts.width) { fb.style.fontSize = "0.9rem"; }
-      img.replaceWith(fb);
-      if (typeof opts.onFallback === "function") opts.onFallback(fb);
+      const chip = document.createElement("span");
+      chip.className = "brand-initial";
+      chip.style.color = b.colors.primary;
+      chip.textContent = b.name.charAt(0);
+      img.replaceWith(chip);
     };
-    img.src = src || "";
-    return img;
-  }
+    img.src = b.logo || "";
+    visual.appendChild(img);
 
-  /* ---------- 1. CSSカスタムプロパティへ注入 ---------- */
-  const root = document.documentElement.style;
-  root.setProperty("--color-primary", C.colors.primary.hex);
-  root.setProperty("--color-secondary", C.colors.secondary.hex);
-  root.setProperty("--color-accent", C.colors.accent.hex);
-  if (C.colors.neutral[0]) root.setProperty("--color-gray-dark", C.colors.neutral[0].hex);
-  if (C.colors.neutral[1]) root.setProperty("--color-gray-mid", C.colors.neutral[1].hex);
-  if (C.colors.neutral[2]) root.setProperty("--color-gray-light", C.colors.neutral[2].hex);
-  root.setProperty("--font-jp", '"' + C.typography.jp.family + '", sans-serif');
-  root.setProperty("--font-en", '"' + C.typography.en.family + '", sans-serif');
+    const body = document.createElement("div");
+    body.className = "card-body";
+    const h2 = document.createElement("h2");
+    h2.textContent = b.name;
+    const en = document.createElement("p");
+    en.className = "card-en";
+    en.textContent = b.nameEn || "";
+    const tag = document.createElement("p");
+    tag.className = "card-tagline";
+    tag.textContent = b.tagline || "";
+    body.appendChild(h2); body.appendChild(en); body.appendChild(tag);
 
-  /* ---------- 2. テキストバインド ---------- */
-  document.title = C.brandName + " ブランドガイドライン";
-  document.querySelectorAll("[data-bind]").forEach(node => {
-    const key = node.getAttribute("data-bind");
-    if (C[key] !== undefined) node.textContent = C[key];
+    const footer = document.createElement("div");
+    footer.className = "card-footer";
+    const meta = document.createElement("span");
+    meta.textContent = "v" + b.version + " / " + b.updated;
+    const cta = document.createElement("span");
+    cta.className = "card-cta";
+    cta.textContent = "ガイドラインを見る →";
+    footer.appendChild(meta); footer.appendChild(cta);
+
+    card.appendChild(visual);
+    card.appendChild(body);
+    card.appendChild(footer);
+    grid.appendChild(card);
   });
-
-  /* ---------- 3. 表紙ロゴ ---------- */
-  document.getElementById("coverLogo").appendChild(
-    createLogo(C.logo.primary, { height: "80px" })
-  );
-
-  /* ---------- 4. ロゴ基本形 ---------- */
-  document.querySelectorAll("[data-logo-stage]").forEach(stage => {
-    const kind = stage.getAttribute("data-logo-stage");
-    stage.appendChild(createLogo(C.logo[kind], {
-      symbol: kind === "symbol",
-      onDark: kind === "white"
-    }));
-  });
-
-  /* ---------- 5. クリアスペース ---------- */
-  const LOGO_H = 60; // デモ表示上のロゴ高さ(px)
-  const pad = Math.round(LOGO_H * C.logo.clearSpaceRatio);
-  const csBox = document.getElementById("clearspaceBox");
-  csBox.style.padding = pad + "px";
-  document.getElementById("clearRatioText").textContent = C.logo.clearSpaceRatio;
-  document.getElementById("clearspaceNote").textContent =
-    "クリアスペース = ロゴ高さ × " + C.logo.clearSpaceRatio;
-  const csLogo = createLogo(C.logo.primary, { className: "cs-logo" });
-  csBox.appendChild(csLogo);
-
-  /* ---------- 6. 最小使用サイズ ---------- */
-  const minDemo = document.getElementById("minsizeDemo");
-  document.getElementById("minSizeText").textContent = C.logo.minWidthPx;
-  [
-    { w: C.logo.minWidthPx * 1.5, label: "推奨サイズ以上" },
-    { w: C.logo.minWidthPx, label: "最小サイズ", strong: true }
-  ].forEach(item => {
-    const wrap = el("div", "minsize-item");
-    wrap.appendChild(createLogo(C.logo.primary, { width: item.w + "px" }));
-    const cap = el("div", "size-caption");
-    cap.innerHTML = (item.strong ? '<span class="size-value">' + item.w + "px（最小）</span>"
-                                 : item.w + "px") + "<br>" + item.label;
-    wrap.appendChild(cap);
-    minDemo.appendChild(wrap);
-  });
-
-  /* ---------- 7. 背景色別の使用可否 ---------- */
-  const bgGrid = document.getElementById("bgUsageGrid");
-  [
-    { bg: "#FFFFFF", logo: C.logo.primary, ok: true,  label: "白背景 + 通常ロゴ" },
-    { bg: C.colors.secondary.hex, logo: C.logo.white, ok: true, label: "ブランド濃色 + 白抜き", onDark: true },
-    { bg: C.colors.neutral[2] ? C.colors.neutral[2].hex : "#F2F2F2", logo: C.logo.primary, ok: true, label: "淡色背景 + 通常ロゴ" },
-    { bg: C.colors.accent.hex, logo: C.logo.primary, ok: false, label: "高彩度背景 + 通常ロゴ" }
-  ].forEach(item => {
-    const card = el("figure", "bg-usage-card");
-    const stage = el("div", "bg-stage");
-    stage.style.background = item.bg;
-    stage.appendChild(createLogo(item.logo, { onDark: item.onDark }));
-    const verdict = el("figcaption", "bg-verdict " + (item.ok ? "ok" : "ng"),
-      (item.ok ? "○ 使用可" : "× 使用不可") + "<br><span style='font-weight:400; color:var(--color-gray-mid); font-size:0.75rem;'>" + item.label + "</span>");
-    card.appendChild(stage);
-    card.appendChild(verdict);
-    bgGrid.appendChild(card);
-  });
-
-  /* ---------- 8. 禁止例（CSSでロゴに実際の加工を適用） ---------- */
-  const dontGrid = document.getElementById("dontGrid");
-  [
-    { cls: "dont-distort",  label: "縦横比を変えて変形しない" },
-    { cls: "dont-rotate",   label: "回転・傾けて使用しない" },
-    { cls: "dont-recolor",  label: "指定以外の色に変更しない" },
-    { cls: "dont-shadow",   label: "影・エフェクトを付けない" },
-    { cls: "dont-outline",  label: "輪郭線を付けない" },
-    { cls: "dont-lowcontrast", label: "低コントラストの背景に置かない", stageCls: "dont-lowcontrast-stage" }
-  ].forEach((item, i) => {
-    const card = el("figure", "dont-card");
-    const stage = el("div", "dont-stage" + (item.stageCls ? " " + item.stageCls : ""));
-    stage.appendChild(createLogo(C.logo.primary, {
-      className: item.cls,
-      onFallback: fb => fb.classList.add(item.cls)
-    }));
-    const cap = el("figcaption", null,
-      '<span class="dont-no">NG ' + (i + 1) + "</span>" + item.label);
-    card.appendChild(stage);
-    card.appendChild(cap);
-    dontGrid.appendChild(card);
-  });
-
-  /* ---------- 9. カラーパレット ---------- */
-  function colorCard(color) {
-    const card = el("div", "color-card");
-    const chip = el("div", "color-chip");
-    chip.style.background = color.hex;
-    chip.style.color = readableTextColor(color.hex);
-    chip.textContent = color.hex.toUpperCase();
-    const info = el("div", "color-info",
-      '<div class="color-name">' + color.name + "</div>" +
-      '<div class="color-code">HEX ' + color.hex.toUpperCase() + "<br>" + rgbText(color.hex) + "</div>");
-    card.appendChild(chip);
-    card.appendChild(info);
-    return card;
-  }
-  const brandGrid = document.getElementById("brandColorGrid");
-  [C.colors.primary, C.colors.secondary, C.colors.accent].forEach(c =>
-    brandGrid.appendChild(colorCard(c)));
-  const neutralGrid = document.getElementById("neutralColorGrid");
-  C.colors.neutral.forEach(c => neutralGrid.appendChild(colorCard(c)));
-
-  /* 使用比率バー */
-  const ratioBar = document.getElementById("ratioBar");
-  [
-    { hex: C.colors.neutral[2] ? C.colors.neutral[2].hex : "#F2F2F2", pct: 70, label: "Base 70%" },
-    { hex: C.colors.primary.hex, pct: 25, label: "Main 25%" },
-    { hex: C.colors.accent.hex, pct: 5, label: "5%" }
-  ].forEach(seg => {
-    const s = el("div", "ratio-seg", seg.label);
-    s.style.width = seg.pct + "%";
-    s.style.background = seg.hex;
-    s.style.color = readableTextColor(seg.hex);
-    ratioBar.appendChild(s);
-  });
-
-  /* ---------- 10. タイポグラフィ ---------- */
-  const weightNames = { 100:"Thin",200:"ExtraLight",300:"Light",400:"Regular",500:"Medium",600:"SemiBold",700:"Bold",800:"ExtraBold",900:"Black" };
-  function buildSpecimen(conf, metaId, rowId, sampleText, fontVar) {
-    document.getElementById(metaId).textContent =
-      conf.family + " — Weights: " + conf.weights.join(" / ");
-    const row = document.getElementById(rowId);
-    conf.weights.forEach(w => {
-      const item = el("div", "weight-item",
-        '<span class="weight-label">' + w + " " + (weightNames[w] || "") + "</span>" + sampleText);
-      item.style.fontFamily = "var(" + fontVar + ")";
-      item.style.fontWeight = w;
-      row.appendChild(item);
-    });
-  }
-  buildSpecimen(C.typography.jp, "jpFontMeta", "jpWeightRow", "永あアA1", "--font-jp");
-  buildSpecimen(C.typography.en, "enFontMeta", "enWeightRow", "Aa Bb 123", "--font-en");
-  document.querySelectorAll(".jp-font").forEach(n => n.style.fontFamily = "var(--font-jp)");
-  document.querySelectorAll(".en-font").forEach(n => n.style.fontFamily = "var(--font-en)");
-
-  /* ---------- 11. ナビゲーション ---------- */
-  const toggle = document.querySelector(".nav-toggle");
-  const nav = document.getElementById("sideNav");
-  const overlay = document.getElementById("navOverlay");
-  function closeNav() {
-    nav.classList.remove("open");
-    overlay.classList.remove("visible");
-    toggle.setAttribute("aria-expanded", "false");
-  }
-  toggle.addEventListener("click", () => {
-    const open = nav.classList.toggle("open");
-    overlay.classList.toggle("visible", open);
-    toggle.setAttribute("aria-expanded", String(open));
-  });
-  overlay.addEventListener("click", closeNav);
-  document.querySelectorAll(".nav-link").forEach(a =>
-    a.addEventListener("click", closeNav));
-
-  /* スクロール位置に応じた現在地ハイライト */
-  const links = Array.from(document.querySelectorAll(".nav-link"));
-  const sections = links.map(a => document.querySelector(a.getAttribute("href")));
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        links.forEach(a => a.classList.toggle("active",
-          a.getAttribute("href") === "#" + entry.target.id));
-      }
-    });
-  }, { rootMargin: "-30% 0px -60% 0px" });
-  sections.forEach(s => s && observer.observe(s));
 })();
 </script>
 </body>
